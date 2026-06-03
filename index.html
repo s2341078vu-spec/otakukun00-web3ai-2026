@@ -247,12 +247,6 @@
         document.addEventListener("DOMContentLoaded", () => {
             lucide.createIcons();
         });
-        
-        // main.jsが要素を追加した後にアイコンを再描画するための仕組み
-        const observer = new MutationObserver(() => {
-            lucide.createIcons();
-        });
-        observer.observe(document.body, { childList: true, subtree: true });
     </script>
 </body>
 </html>

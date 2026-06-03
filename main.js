@@ -380,7 +380,10 @@ document.addEventListener("DOMContentLoaded", () => {
         
         if (baseData) {
             try {
-                appState = JSON.parse(baseData);
+                const parsed = JSON.parse(baseData);
+                if (parsed && typeof parsed === 'object') {
+                    appState = parsed;
+                }
                 if (!appState.logs) appState.logs = [];
                 if (!appState.journals) appState.journals = [];
                 if (!appState.unlockedBadges) appState.unlockedBadges = [];
@@ -644,5 +647,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }
         });
+        
+        // 動的生成された要素のアイコンを描画
+        if (window.lucide) {
+            window.lucide.createIcons();
+        }
     }
 });
