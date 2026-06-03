@@ -468,7 +468,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // キーワード判定用ヘルパー
         const hasKeyword = (keywords) => {
             return appState.logs.some(log => {
-                const content = log.content.toLowerCase();
+                const content = (log.content || "").toLowerCase();
                 return keywords.some(keyword => content.includes(keyword));
             });
         };
