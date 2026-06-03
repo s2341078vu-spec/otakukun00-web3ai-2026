@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YutoriJournal — 効率化社会をハックする余白のデータベース</title>
+    <title>YutoriJournal v2 — 効率化社会をハックする余白のデータベース</title>
     <meta name="description" content="効率化社会によって失われる「人生の余白」を取り戻すためのプライベートジャーナル。無駄や失敗をリフレーミングし、人間味を蓄積します。">
     <!-- CSSの読み込み -->
     <link rel="stylesheet" href="style.css">
@@ -16,7 +16,7 @@
         <header>
             <div class="logo-section">
                 <i data-lucide="compass"></i>
-                <h1>YutoriJournal</h1>
+                <h1>YutoriJournal v2</h1>
             </div>
             <p class="subtitle">効率化社会をハックする。無駄や失敗を「人間味」として蓄積するプライベート・データベース</p>
         </header>
@@ -27,7 +27,7 @@
             <!-- 左カラム（統計、入力、バッジ） -->
             <div class="sidebar">
                 
-                <!-- 余白メーター (Stat) -->
+                <!-- 余白メーター (Stat) & ゆとり猫 -->
                 <div class="glass-card meter-card">
                     <div class="card-title">
                         <i data-lucide="activity"></i>
@@ -46,13 +46,15 @@
                             <circle class="meter-fill" id="meter-fill" cx="70" cy="70" r="60" />
                         </svg>
                         <div class="meter-text">
+                            <!-- ゆとり猫アバター -->
+                            <div class="cat-avatar" id="cat-avatar">🐱</div>
                             <span class="meter-number" id="meter-number">0</span>
-                            <span class="meter-label">HUMANITY %</span>
+                            <span class="meter-label" id="cat-status">余白不足</span>
                         </div>
                     </div>
                     
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
-                        今日目標値（120分）に対する余白確保率
+                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;" id="cat-speech">
+                        「忙しすぎるニャ。少し休むニャ…」
                     </p>
 
                     <div class="stats-grid">
@@ -65,6 +67,12 @@
                             <div class="stat-lbl">人間味ログ</div>
                         </div>
                     </div>
+
+                    <!-- 余白の呼吸トリガーボタン -->
+                    <button type="button" class="btn" id="breathe-trigger-btn" style="background: linear-gradient(135deg, #34d399 0%, #059669 100%); margin-top: 1.25rem; box-shadow: 0 10px 20px -10px rgba(52, 211, 153, 0.5);">
+                        <i data-lucide="wind"></i>
+                        <span>余白の呼吸をする（1分）</span>
+                    </button>
                 </div>
 
                 <!-- ログ記録フォーム -->
@@ -87,8 +95,8 @@
                             <textarea id="log-content" placeholder="何が起きましたか？あなたの言葉で素直に書いてみましょう..." required></textarea>
                         </div>
 
-                        <div class="form-group">
-                            <label for="log-time">過ごした余白時間（分）※余白記録のみ</label>
+                        <div class="form-group" id="time-group">
+                            <label for="log-time">過ごした余白時間（分）</label>
                             <input type="text" id="log-time" value="10" placeholder="分">
                         </div>
 
@@ -117,9 +125,26 @@
                         <span>人間味バッジ</span>
                         <span id="stats-zen-count" style="display:none;">0</span> <!-- 内部計算同期用 -->
                     </div>
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 1rem; text-align: center;">
+                        ※解放されたバッジをクリックすると偉人の金言が表示されます
+                    </p>
                     <div class="badge-grid" id="badge-grid">
                         <!-- JavaScriptで動的生成 -->
                     </div>
+                </div>
+
+                <!-- 偉人の言葉パネル (デフォルト非表示) -->
+                <div id="wisdom-box" class="glass-card" style="display: none; border-color: rgba(52, 211, 153, 0.4); animation: fade-in 0.5s ease-out;">
+                    <div class="card-title" style="margin-bottom: 0.75rem;">
+                        <i data-lucide="quote" style="color: var(--success);"></i>
+                        <span style="color: var(--success); font-size: 0.95rem;">思索の金言</span>
+                    </div>
+                    <blockquote id="wisdom-quote" style="font-size: 0.9rem; font-style: italic; color: var(--text-primary); margin-bottom: 0.5rem; line-height: 1.5; border-left: 2px solid var(--success); padding-left: 0.75rem;">
+                        「無駄を楽しむ時間こそ、無駄ではない。」
+                    </blockquote>
+                    <cite id="wisdom-author" style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right;">
+                        — バートランド・ラッセル
+                    </cite>
                 </div>
 
             </div>
@@ -193,6 +218,25 @@
             <h3 id="modal-badge-name" style="margin-bottom: 0.75rem; color: var(--primary);">人間味の第一歩</h3>
             <p class="modal-desc" id="modal-badge-desc">最初の「余白」または「バグ」を記録した。</p>
             <button class="close-btn" id="close-modal">余白に戻る</button>
+        </div>
+    </div>
+
+    <!-- 呼吸ガイドモーダル -->
+    <div class="modal-overlay" id="breathe-modal">
+        <div class="modal-content" style="max-width: 400px; padding: 2.5rem 2rem;">
+            <div class="card-title" style="justify-content: center; margin-bottom: 0.5rem; font-size: 1.5rem;">
+                <i data-lucide="wind" style="color: var(--success);"></i>
+                <span>余白の呼吸</span>
+            </div>
+            <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 2rem;">
+                表示に合わせて、深く呼吸を繰り返しましょう。
+            </p>
+            <div class="breathe-circle-container">
+                <div class="breathe-circle" id="breathe-circle"></div>
+                <div class="breathe-instruction" id="breathe-instruction">呼吸を整えてください</div>
+            </div>
+            <div id="breathe-timer" style="font-size: 1.5rem; font-weight: 700; margin-top: 1.5rem; color: var(--success); font-family: var(--font-outfit);">60s</div>
+            <button class="close-btn" id="cancel-breathe" style="margin-top: 2rem; background: rgba(255, 255, 255, 0.05); border-color: rgba(255,255,255,0.1); width: 100%;">セッションを終了</button>
         </div>
     </div>
 

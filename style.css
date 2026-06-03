@@ -150,6 +150,7 @@ h1 {
     margin-bottom: 1.5rem;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 0.75rem;
     color: var(--text-primary);
 }
@@ -174,9 +175,9 @@ h1 {
 
 .meter-display {
     position: relative;
-    width: 140px;
-    height: 140px;
-    margin: 0 auto 1.25rem;
+    width: 170px;
+    height: 170px;
+    margin: 0 auto 1rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -186,6 +187,10 @@ h1 {
     transform: rotate(-90deg);
     width: 100%;
     height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
 }
 
 .meter-bg {
@@ -205,14 +210,31 @@ h1 {
 }
 
 .meter-text {
-    position: absolute;
+    position: relative;
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+}
+
+/* ゆとり猫アバター */
+.cat-avatar {
+    font-size: 3rem;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+    animation: float-cat 3s infinite alternate ease-in-out;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+    user-select: none;
+}
+
+@keyframes float-cat {
+    0% { transform: translateY(0) scale(1); }
+    100% { transform: translateY(-6px) scale(1.03); }
 }
 
 .meter-number {
-    font-size: 2.25rem;
+    font-size: 1.75rem;
     font-weight: 700;
     line-height: 1;
     color: #fff;
@@ -220,17 +242,32 @@ h1 {
 }
 
 .meter-label {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--text-secondary);
-    margin-top: 0.25rem;
+    margin-top: 0.15rem;
     letter-spacing: 0.05em;
+    font-weight: 600;
+}
+
+#cat-speech {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    display: inline-block;
+    max-width: 90%;
+    margin: 0.5rem auto 1.25rem;
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
 .stats-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     padding-top: 1.25rem;
 }
@@ -368,7 +405,7 @@ textarea {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    cursor: help;
+    cursor: pointer;
     position: relative;
 }
 
@@ -408,6 +445,12 @@ textarea {
 
 .badge-item.locked {
     opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.badge-item.active-badge .badge-icon {
+    border-color: var(--success);
+    box-shadow: 0 0 20px var(--success-glow);
 }
 
 /* ツールチップ */
@@ -435,6 +478,11 @@ textarea {
 .badge-item:hover::after {
     opacity: 1;
     transform: translateX(-50%) translateY(0);
+}
+
+/* 偉人の言葉ブロック */
+#wisdom-box {
+    box-shadow: 0 8px 30px rgba(52, 211, 153, 0.1);
 }
 
 /* 右側：タイムラインとジャーナル */
@@ -747,6 +795,53 @@ textarea {
 .close-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 呼吸ガイドのアニメーションコンテナ */
+.breathe-circle-container {
+    width: 200px;
+    height: 200px;
+    margin: 2rem auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.breathe-circle {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.3) 0%, rgba(167, 139, 250, 0.3) 100%);
+    border: 2px solid var(--success);
+    box-shadow: 0 0 30px var(--success-glow);
+    transition: transform 4s ease-in-out;
+}
+
+/* 呼吸状態に応じたクラス（JSでトランスフォーム） */
+.breathe-circle.inhale {
+    transform: scale(2.2);
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.5) 0%, rgba(167, 139, 250, 0.5) 100%);
+}
+
+.breathe-circle.hold {
+    transform: scale(2.2);
+    box-shadow: 0 0 50px rgba(52, 211, 153, 0.6);
+}
+
+.breathe-circle.exhale {
+    transform: scale(1);
+}
+
+.breathe-instruction {
+    position: absolute;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    z-index: 5;
+    pointer-events: none;
+    transition: var(--transition-smooth);
 }
 
 /* フッター */
