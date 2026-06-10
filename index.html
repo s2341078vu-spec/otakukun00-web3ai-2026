@@ -11,194 +11,128 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+    <!-- 背景のアンビエントな波紋（画面全体に広げる） -->
+    <div class="ambient-background">
+        <div class="ripple-container" id="ripple-container">
+            <div class="ripple-wave wave-1"></div>
+            <div class="ripple-wave wave-2"></div>
+            <div class="ripple-wave wave-3"></div>
+        </div>
+    </div>
+
     <div class="app-container">
-        <!-- ヘッダー -->
-        <header>
-            <div class="logo-section">
-                <i data-lucide="compass"></i>
-                <h1>YutoriJournal v2</h1>
+        <!-- ミニマルなヘッダー -->
+        <header class="zen-header">
+            <div class="header-top">
+                <div class="logo-section">
+                    <i data-lucide="compass"></i>
+                    <h1>YutoriJournal</h1>
+                </div>
+                <div class="cat-mini-display" id="cat-display">
+                    <span class="cat-avatar" id="cat-avatar">🐱</span>
+                    <span class="cat-status" id="cat-status">のんびり</span>
+                </div>
             </div>
-            <p class="subtitle">効率化社会をハックする。無駄や失敗を「人間味」として蓄積するプライベート・データベース</p>
+            <p id="cat-speech">「忙しすぎるニャ。少し休むニャ…」</p>
         </header>
 
-        <!-- メイングリッド -->
-        <div class="main-grid">
-            
-            <!-- 左カラム（統計、入力、バッジ） -->
-            <div class="sidebar">
-                
-                <!-- 余白メーター (Stat) & ゆとり猫 -->
-                <div class="glass-card meter-card">
-                    <div class="card-title">
-                        <i data-lucide="activity"></i>
-                        <span>余白回復ステータス</span>
-                    </div>
-                    
-                    <div class="meter-display">
-                        <svg class="meter-svg" viewBox="0 0 140 140">
-                            <defs>
-                                <linearGradient id="primary-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                                    <stop offset="0%" stop-color="#a78bfa" />
-                                    <stop offset="100%" stop-color="#f472b6" />
-                                </linearGradient>
-                            </defs>
-                            <circle class="meter-bg" cx="70" cy="70" r="60" />
-                            <circle class="meter-fill" id="meter-fill" cx="70" cy="70" r="60" />
-                        </svg>
-                        <div class="meter-text">
-                            <!-- ゆとり猫アバター -->
-                            <div class="cat-avatar" id="cat-avatar">🐱</div>
-                            <span class="meter-number" id="meter-number">0</span>
-                            <span class="meter-label" id="cat-status">余白不足</span>
-                        </div>
-                    </div>
-                    
-                    <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 0.5rem;" id="cat-speech">
-                        「忙しすぎるニャ。少し休むニャ…」
-                    </p>
-
-                    <div class="stats-grid">
-                        <div class="stat-item">
-                            <div class="stat-val" id="stats-total-margin">0分</div>
-                            <div class="stat-lbl">合計余白時間</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-val" id="stats-humanity-count">0回</div>
-                            <div class="stat-lbl">人間味ログ</div>
-                        </div>
-                    </div>
-
-                    <!-- 余白の呼吸トリガーボタン -->
-                    <button type="button" class="btn" id="breathe-trigger-btn" style="background: linear-gradient(135deg, #34d399 0%, #059669 100%); margin-top: 1.25rem; box-shadow: 0 10px 20px -10px rgba(52, 211, 153, 0.5);">
-                        <i data-lucide="wind"></i>
-                        <span>余白の呼吸をする（1分）</span>
-                    </button>
+        <!-- メインコンテンツ (縦スクロールのシングルカラム) -->
+        <main class="zen-main">
+            <!-- 1. 思索の窓 (Reflect) -->
+            <section class="zen-section" id="section-reflect">
+                <div class="section-header">
+                    <h2>思索の窓</h2>
+                    <p class="section-desc">答えのない問いに向き合い、言葉をそっと手放します</p>
                 </div>
-
-                <!-- ログ記録フォーム -->
-                <div class="glass-card">
-                    <div class="card-title">
-                        <i data-lucide="plus-circle"></i>
-                        <span>余白・バグを記録する</span>
-                    </div>
-                    <form id="log-form">
-                        <div class="form-group">
-                            <label for="log-type">ログタイプ</label>
-                            <select id="log-type">
-                                <option value="margin">余白の記録（寄り道、ぼーっとした等）</option>
-                                <option value="bug">効率バグ（タスク詰め込み、即レス焦り等）</option>
-                            </select>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="log-content">内容（例：野良猫を10分眺めた、タスク焦りでメッセージ誤解した）</label>
-                            <textarea id="log-content" placeholder="何が起きましたか？あなたの言葉で素直に書いてみましょう..." required></textarea>
-                        </div>
-
-                        <div class="form-group" id="time-group">
-                            <label for="log-time">過ごした余白時間（分）</label>
-                            <input type="text" id="log-time" value="10" placeholder="分">
-                        </div>
-
-                        <div class="form-group">
-                            <label>エモさ・人間味レベル</label>
-                            <div class="level-selector">
-                                <button type="button" class="level-btn" data-level="1"><span>🌱</span>1</button>
-                                <button type="button" class="level-btn" data-level="2"><span>🍃</span>2</button>
-                                <button type="button" class="level-btn active" data-level="3"><span>✨</span>3</button>
-                                <button type="button" class="level-btn" data-level="4"><span>🔮</span>4</button>
-                                <button type="button" class="level-btn" data-level="5"><span>🌸</span>5</button>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn">
-                            <i data-lucide="check"></i>
-                            <span>データベースに送信</span>
-                        </button>
-                    </form>
-                </div>
-
-                <!-- 獲得バッジ -->
-                <div class="glass-card">
-                    <div class="card-title">
-                        <i data-lucide="award"></i>
-                        <span>人間味バッジ</span>
-                        <span id="stats-zen-count" style="display:none;">0</span> <!-- 内部計算同期用 -->
-                    </div>
-                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 1rem; text-align: center;">
-                        ※解放されたバッジをクリックすると偉人の金言が表示されます
-                    </p>
-                    <div class="badge-grid" id="badge-grid">
-                        <!-- JavaScriptで動的生成 -->
-                    </div>
-                </div>
-
-                <!-- 偉人の言葉パネル (デフォルト非表示) -->
-                <div id="wisdom-box" class="glass-card" style="display: none; border-color: rgba(52, 211, 153, 0.4); animation: fade-in 0.5s ease-out;">
-                    <div class="card-title" style="margin-bottom: 0.75rem;">
-                        <i data-lucide="quote" style="color: var(--success);"></i>
-                        <span style="color: var(--success); font-size: 0.95rem;">思索の金言</span>
-                    </div>
-                    <blockquote id="wisdom-quote" style="font-size: 0.9rem; font-style: italic; color: var(--text-primary); margin-bottom: 0.5rem; line-height: 1.5; border-left: 2px solid var(--success); padding-left: 0.75rem;">
-                        「無駄を楽しむ時間こそ、無駄ではない。」
-                    </blockquote>
-                    <cite id="wisdom-author" style="font-size: 0.75rem; color: var(--text-secondary); display: block; text-align: right;">
-                        — バートランド・ラッセル
-                    </cite>
-                </div>
-
-            </div>
-
-            <!-- 右カラム（タイムライン、ジャーナル） -->
-            <div class="content-area">
-                
-                <!-- Zenジャーナル (答えのない問い) -->
-                <div class="glass-card zen-card">
-                    <div class="card-title">
-                        <i data-lucide="help-circle"></i>
-                        <span>答えのない問いへの思索</span>
-                    </div>
+                <div class="zen-card">
                     <div class="zen-question-box">
                         <div class="zen-title">Zen Question</div>
                         <div class="zen-question" id="zen-question">ロード中...</div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <textarea id="journal-answer" placeholder="答えは一つではありません。今のあなたの考えを自由に綴ってください..." style="min-height: 80px;"></textarea>
+                    <div class="form-group">
+                        <textarea id="journal-answer" placeholder="答えは一つではありません。今のあなたの考えを自由に綴ってください..."></textarea>
                     </div>
                     <div class="journal-footer">
-                        <button type="button" class="btn" id="refresh-question" style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); width: auto; color: var(--text-secondary); box-shadow: none;">
+                        <button type="button" class="btn-minimal btn-secondary" id="refresh-question">
                             <i data-lucide="refresh-cw"></i>
                             <span>別の問い</span>
                         </button>
-                        <button type="button" class="btn" id="submit-journal" style="width: auto; padding-left: 2rem; padding-right: 2rem;">
-                            <i data-lucide="pen-tool"></i>
-                            <span>思索を記録する</span>
+                        <button type="button" class="btn-minimal btn-primary" id="submit-journal">
+                            <i data-lucide="wind"></i>
+                            <span>思索を手放す</span>
                         </button>
                     </div>
+                </div>
+            </section>
 
-                    <!-- 思索履歴 -->
-                    <div class="history-section">
-                        <div class="history-title">思考のアップデート履歴</div>
-                        <div class="history-list" id="history-list">
-                            <!-- JavaScriptで動的生成 -->
+            <!-- 2. 余白の記録 (Write) -->
+            <section class="zen-section" id="section-write">
+                <div class="section-header">
+                    <h2>余白の記録</h2>
+                    <p class="section-desc">効率や生産性から外れた「無駄」や「バグ」をここにそっと置きます</p>
+                </div>
+                <div class="form-card">
+                    <form id="log-form">
+                        <div class="form-group">
+                            <label for="log-type">ログの性質</label>
+                            <select id="log-type">
+                                <option value="margin">余白（寄り道、ぼーっとしたこと、無駄の発見）</option>
+                                <option value="bug">効率バグ（タスクの詰め込み、即レスの焦り、失敗）</option>
+                            </select>
                         </div>
+                        
+                        <div class="form-group">
+                            <label for="log-content">出来事</label>
+                            <textarea id="log-content" placeholder="何が起きましたか？あなたの言葉で素直に書いてみましょう..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-minimal btn-primary">
+                            <i data-lucide="check"></i>
+                            <span>記録をそっと置く</span>
+                        </button>
+                    </form>
+
+                    <!-- 余白の呼吸セッションボタン -->
+                    <div class="breathe-section-trigger">
+                        <p>頭がいっぱいなときは、1分間呼吸を整えましょう</p>
+                        <button type="button" class="btn-minimal btn-success" id="breathe-trigger-btn">
+                            <i data-lucide="wind"></i>
+                            <span>余白の呼吸をはじめる</span>
+                        </button>
                     </div>
                 </div>
+            </section>
 
-                <!-- タイムライン (ログ履歴とリフレーミング) -->
-                <div class="glass-card">
-                    <div class="card-title">
+            <!-- 3. ゆとりの庭 (Garden) -->
+            <section class="zen-section" id="section-garden">
+                <div class="section-header">
+                    <h2>ゆとりの庭</h2>
+                    <p class="section-desc">耕された思索の余韻と、人間味の断片が集まる場所</p>
+                </div>
+                
+                <!-- 過去の余白の断片 -->
+                <div class="logs-card">
+                    <div class="card-title-zen">
                         <i data-lucide="scroll"></i>
-                        <span>人間味のデータベース（履歴）</span>
+                        <span>余白の断片（履歴）</span>
                     </div>
                     <div class="timeline-list" id="timeline-list">
                         <!-- JavaScriptで動的生成 -->
                     </div>
                 </div>
 
-            </div>
-
-        </div>
+                <!-- 放念した思索の余韻 -->
+                <div class="history-card">
+                    <div class="card-title-zen">
+                        <i data-lucide="history"></i>
+                        <span>放念した思索の余韻</span>
+                    </div>
+                    <div class="history-list" id="history-list">
+                        <!-- JavaScriptで動的生成 -->
+                    </div>
+                </div>
+            </section>
+        </main>
 
         <!-- フッター -->
         <footer>
@@ -207,18 +141,6 @@
                 ※ このアプリはローカル環境（LocalStorage）のみでデータを保存します。あえて「シェア」や「他者との比較」機能はありません。あなたの余白はあなただけのものです。
             </p>
         </footer>
-    </div>
-
-    <!-- バッジ獲得モーダル -->
-    <div class="modal-overlay" id="modal-overlay">
-        <div class="modal-content">
-            <div class="congrats-sparkles">🎉 ✨ 🌸</div>
-            <div class="modal-badge-icon" id="modal-badge-icon">🐣</div>
-            <h2 class="modal-title">人間味バッジ獲得！</h2>
-            <h3 id="modal-badge-name" style="margin-bottom: 0.75rem; color: var(--primary);">人間味の第一歩</h3>
-            <p class="modal-desc" id="modal-badge-desc">最初の「余白」または「バグ」を記録した。</p>
-            <button class="close-btn" id="close-modal">余白に戻る</button>
-        </div>
     </div>
 
     <!-- 呼吸ガイドモーダル -->
@@ -250,3 +172,4 @@
     </script>
 </body>
 </html>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
